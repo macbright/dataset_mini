@@ -60,31 +60,50 @@ const InnerDiv = styled.div`
 `;
 
 const DataUpload = () => {
-	// const [ files, setfiles] = useState
+	const [ file, setfile] = useState()
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone()
- 
-	const files = acceptedFiles.map(file => (
-		<li key={file.path}>
-				{file.path} - {file.size} bytes
-		</li>
-	))
+
 	
-	return (
-		<Container>
-			<p> Upload your dataset to this page and click next when you finish</p>
-			<InnerDiv {...getRootProps()}>
-				<input {...getInputProps()} />
-					<img src={drag}/>
+ 
+	const handleClick = (e) => {
+		e.stopPropagation();
+		setfile(undefined)
+	}
+
+
+	const file_path = (file_input) => {
+		if(file_input !== undefined){
+			return <div>
+					<p>{file}</p> 
+					<span> or...</span>
+					<button onClick={handleClick}>Cancel</button>
+				</div>
+		} else {
+			return	<div>
 					<p>Drag and drop files here</p> 
 					<span> or...</span>
 					<button>Browse files</button>
+				</div>
+		}
+	}
+
+	const handleChange = (e) => {
+		e.persist();
+		setfile(e.target.files[0].name);
+	}
+	
+	return (
+		<Container>
+			{console.log(file)}
+			<p> Upload your dataset to this page and click next when you finish</p>
+			<InnerDiv {...getRootProps()}>
+				<input {...getInputProps()} onChange={handleChange} />
+					<img src={drag}/>
+					{ file_path(file) }	
 			</InnerDiv>
 			<aside>
 				<h3> Files</h3>
-				{ files}
-				<h3> Files</h3>
-				<h3> Files</h3>
-				<h3> Files</h3>
+				{ file }
 			</aside>
 		</Container>
   )
