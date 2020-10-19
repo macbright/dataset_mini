@@ -17,8 +17,8 @@ const getColor = (props) => {
 }
 
 const Container = styled.div`
-	width: 718px;
-	height: 700;
+	max-width: 718px;
+	height: 500px;
   flex: 1;
   display: flex;
 	margin: 0 auto;
@@ -28,6 +28,7 @@ const Container = styled.div`
   background-color: #fafafc;
   color: #2c2c2c;
   outline: none;
+	box-sizing: border-box;
 `;
 
 const InnerDiv = styled.div`
@@ -63,13 +64,10 @@ const DataUpload = () => {
 	const [ file, setfile] = useState()
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone()
 
-	
- 
 	const handleClick = (e) => {
 		e.stopPropagation();
 		setfile(undefined)
 	}
-
 
 	const file_path = (file_input) => {
 		if(file_input !== undefined){
@@ -101,10 +99,6 @@ const DataUpload = () => {
 					<img src={drag}/>
 					{ file_path(file) }	
 			</InnerDiv>
-			<aside>
-				<h3> Files</h3>
-				{ file }
-			</aside>
 		</Container>
   )
 }
