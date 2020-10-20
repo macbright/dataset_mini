@@ -1,20 +1,9 @@
 import React, {useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components';
-import drag from '../images/drag.png'
+import drag from '../images/drag.png';
+import XLSX from 'xlsx' ;
 
-const getColor = (props) => {
-  if (props.isDragAccept) {
-      return '#00e676';
-  }
-  if (props.isDragReject) {
-      return '#ff1744';
-  }
-  if (props.isDragActive) {
-      return '#2196f3';
-  }
-  return '#eeeeee';
-}
 
 const Container = styled.div`
 	max-width: 718px;
@@ -59,10 +48,44 @@ const InnerDiv = styled.div`
 		font-weight: bold;
 	}
 `;
+const LastDiv = styled.div`
+	width: 250px;
+	color: #D3D3D3;
+	font-size: 12px;
+	font-weight: bold;
+	margin-top: 15px;
+`
 
-const DataUpload = () => {
-	const [ file, setfile] = useState()
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone()
+const DataUpload = (props) => {
+	const [ file, setfile] = useState([])
+	const onDrop = useCallback(acceptedFiles => {
+		setfile(acceptedFiles.map(file => file.name))
+     acceptedFiles.forEach((file) => {
+			 	console.log("file")
+        const reader = new FileReader() 
+        const rABS = !!reader.readAsBinaryString;  // !! converts object to boolean 
+        reader.onabort = () => console.log('file reading was aborted')
+        reader.onerror = () => console.log('file reading has failed')
+        reader.onload = (e) => {
+            // Do what you want with the file contents 
+            var bstr = e.target.result; 
+            var workbook = XLSX.read(bstr, { type: rABS ? "binary" : "array" })
+            var sheet_name_list = workbook.SheetNames[0];
+            var jsonFromExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list], {
+                raw: false,
+                dateNF: "MM-DD-YYYY",
+                header:1,
+                defval: ""
+            })
+            console.log("jsonFromExcel object=")
+            console.log(jsonFromExcel)
+
+          }
+          if (rABS) reader.readAsBinaryString(file);
+          else reader.readAsArrayBuffer(file);
+     })
+  }, [])
+	const {getRootProps, getInputProps} = useDropzone({ onDrop, accept: '.csv,.xlsx,.tsv,.xls,.txt'})
 
 	const handleClick = (e) => {
 		e.stopPropagation();
@@ -70,7 +93,7 @@ const DataUpload = () => {
 	}
 
 	const file_path = (file_input) => {
-		if(file_input !== undefined){
+		if(file_input.length > 0){
 			return <div>
 					<p>{file}</p> 
 					<span> or...</span>
@@ -92,13 +115,13 @@ const DataUpload = () => {
 	
 	return (
 		<Container>
-			{console.log(file)}
 			<p> Upload your dataset to this page and click next when you finish</p>
 			<InnerDiv {...getRootProps()}>
-				<input {...getInputProps()} onChange={handleChange} />
+				<input {...getInputProps()}  />
 					<img src={drag}/>
 					{ file_path(file) }	
 			</InnerDiv>
+			<LastDiv> support: CSV, TSV, .TXT, XLS, XLSX</LastDiv>
 		</Container>
   )
 }
