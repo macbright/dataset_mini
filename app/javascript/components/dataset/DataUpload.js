@@ -2,7 +2,11 @@ import React, {useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components';
 import drag from '../images/drag.png';
-import XLSX from 'xlsx' ;
+import { useHistory } from "react-router-dom";
+import { parse } from "papaparse"
+import { useDispatch } from 'react-redux';
+import { ADDFILE, REMOVEFILE } from '../../action/type';
+
 
 
 const Container = styled.div`
@@ -20,6 +24,25 @@ const Container = styled.div`
 	box-sizing: border-box;
 `;
 
+const Foot = styled.div`
+	max-width: 718px;
+	height: 100px;
+	display: block;
+	margin: 0 auto;
+  align-items: center;
+	border-top: 2px solid #D3D3D3;
+	box-sizing: border-box;
+	padding: 25px;
+
+	button {
+		float: right;
+		background-color: blue;
+		color: #fff;
+		padding: 12px 20px 12px 20px;
+		border: none;
+		border-radius: 8px;
+	}
+`
 const InnerDiv = styled.div`
 	height: 200px;
 	width: 250px;
@@ -56,73 +79,66 @@ const LastDiv = styled.div`
 	margin-top: 15px;
 `
 
-const DataUpload = (props) => {
-	const [ file, setfile] = useState([])
+const DataUpload = () => {
+	const [ fileName, setfileName] = useState([])
+	const dispatch = useDispatch()
+	const history = useHistory();
+
 	const onDrop = useCallback(acceptedFiles => {
-		setfile(acceptedFiles.map(file => file.name))
-     acceptedFiles.forEach((file) => {
-			 	console.log("file")
+		setfileName(acceptedFiles.map(file => file.name))
+     acceptedFiles.forEach((file) => {  
         const reader = new FileReader() 
         const rABS = !!reader.readAsBinaryString;  // !! converts object to boolean 
         reader.onabort = () => console.log('file reading was aborted')
         reader.onerror = () => console.log('file reading has failed')
         reader.onload = (e) => {
-            // Do what you want with the file contents 
-            var bstr = e.target.result; 
-            var workbook = XLSX.read(bstr, { type: rABS ? "binary" : "array" })
-            var sheet_name_list = workbook.SheetNames[0];
-            var jsonFromExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list], {
-                raw: false,
-                dateNF: "MM-DD-YYYY",
-                header:1,
-                defval: ""
-            })
-            console.log("jsonFromExcel object=")
-            console.log(jsonFromExcel)
-
-          }
-          if (rABS) reader.readAsBinaryString(file);
-          else reader.readAsArrayBuffer(file);
+					const text = e.target.result;
+					const result = parse(text, { header: true });
+					dispatch({ type: ADDFILE, payload: result})
+        }
+				if (rABS) reader.readAsBinaryString(file);
+				else reader.readAsArrayBuffer(file);
      })
   }, [])
 	const {getRootProps, getInputProps} = useDropzone({ onDrop, accept: '.csv,.xlsx,.tsv,.xls,.txt'})
 
 	const handleClick = (e) => {
 		e.stopPropagation();
-		setfile(undefined)
+		setfileName([])
+		dispatch({ type: REMOVEFILE, payload: {}})
 	}
 
+	const handleNext = () => {
+		if(fileName.length > 0){
+    	history.push("/adjust_settings");
+		}
+	}
 	const file_path = (file_input) => {
 		if(file_input.length > 0){
 			return <div>
-					<p>{file}</p> 
-					<span> or...</span>
-					<button onClick={handleClick}>Cancel</button>
+					<p>{fileName[0]}</p> <span> or...</span><button onClick={handleClick}>Cancel</button>
 				</div>
 		} else {
 			return	<div>
-					<p>Drag and drop files here</p> 
-					<span> or...</span>
-					<button>Browse files</button>
+					<p>Drag and drop files here</p>	<span> or...</span><button>Browse files</button>
 				</div>
 		}
 	}
-
-	const handleChange = (e) => {
-		e.persist();
-		setfile(e.target.files[0].name);
-	}
 	
 	return (
+	<div>
 		<Container>
 			<p> Upload your dataset to this page and click next when you finish</p>
 			<InnerDiv {...getRootProps()}>
 				<input {...getInputProps()}  />
 					<img src={drag}/>
-					{ file_path(file) }	
+					{ file_path(fileName) }	
 			</InnerDiv>
 			<LastDiv> support: CSV, TSV, .TXT, XLS, XLSX</LastDiv>
 		</Container>
+		
+		<Foot><button onClick={handleNext}>Next </button> </Foot>
+		</div>	
   )
 }
 

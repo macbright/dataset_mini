@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
+import { useSelector } from 'react-redux'
 
 const Container = styled.div`
 	max-width: 718px;
@@ -22,15 +23,17 @@ const LastDiv = styled.div`
 `;
 
 const SelectColumns = () => {
+	const file = useSelector(state => state.file)
 	return (
+		
 		<Container>
+			{console.log(file)}
 			<FirstDiv>
 					Exclude columns by untoggling the checkbox
 			</FirstDiv>
 			<LastDiv>
 				Choose included columns to uniquely assign to ID, Name, and Timestamp
 			</LastDiv>
-			
 		</Container>
 	)
 }
