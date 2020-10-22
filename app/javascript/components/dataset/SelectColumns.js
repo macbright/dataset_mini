@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import { useSelector } from 'react-redux'
+import _, { map } from 'underscore'
 
 
 const Container = styled.div`
@@ -39,10 +40,27 @@ const LastDiv = styled.div`
 const SelectColumns = () => {
 	const file = useSelector(state => state.file)
 	const keys = Object.keys(file.payload.data[0])
+	const [ state, setState] = useState(keys)
+	const data = file.payload.data
 	
+	
+	const handleChange = (e) => {
+		if(!e.target.checked){
+			let header = _.without(state, e.target.value)
+			setState(header)
+		} else {
+			let header = state
+			if(!header.includes(e.target.value)){
+				header.push(e.target.value)
+			}
+			setState(header)
+		}	
+	}
+
 	const columnOptions = keys.map((header, i) => 
 		<label className="checkbox" key={i}>
-			<input type="checkbox" defaultChecked="checked" value={header} />
+			<input type="checkbox" defaultChecked="checked" 
+			value={header} onChange={handleChange} />
 			{header} <br />
 		</label>
 	)
@@ -50,7 +68,7 @@ const SelectColumns = () => {
 
 	return (
 		<Container>
-				{console.log(keys)}
+				{console.log(state)}
 				Exclude Columns <br />
 				{	columnOptions }
 				Choose included columns to uniquely assign to ID, Name, and Timestamp
