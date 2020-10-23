@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components';
 import { useHistory } from "react-router-dom";
+import _, { map, values } from 'underscore'
 
 
 
@@ -36,7 +38,7 @@ const Foot = styled.div`
   align-items: center;
 	border-top: 2px solid #D3D3D3;
 	box-sizing: border-box;
-	padding: 25px;
+	padding: 20px;
 `
 const Next = styled.button`
 	float: right;
@@ -55,8 +57,30 @@ const Cancel = styled.button`
 		border-radius: 8px;
 `;
 
+const SelectedCol = styled.div`
+	padding-left: 30px;
+`;
+
+const UniqueCol = styled.div`
+	margin-top: 10px;
+	padding-left: 30px;
+	span{
+		font-size: 16px;	
+		padding: 10px;	
+	}
+`;
+const FirstP =  styled.span`
+	font-weight: bold;
+	margin-right: 80px;
+	font-size: 20px;
+`;
+
+
+
 const ConfirmDetails = () => {
 	const history = useHistory();
+	const addKey = useSelector(state => state.addKey)
+	const uniqueColumn = useSelector(state => state.uniqueColumn)
 
 	const handleNext = () => {
 		if(true){
@@ -65,13 +89,33 @@ const ConfirmDetails = () => {
 	}
 	const handlePrev = () => {
 		if(true){
-    	history.push("/adjust_settings");
+    	history.push("/");
 		}
 	}
+	
+	const showColumns = addKey.map((key, i) => 
+		<SelectedCol key={i}>
+			<p> { key}</p>
+		</SelectedCol>
+	)
+	
+	const showUniqueColumns = Object.keys(uniqueColumn).map(key => 
+		<UniqueCol key={key}>
+			<div>
+			<FirstP> { key}:</FirstP>
+			<span> { uniqueColumn[key]} </span>
+			</div>
+		</UniqueCol>
+	)
+
 	return (
 		<div> 
 			<Container>
-			the confirm details component
+				<strong>Included columns: </strong>
+				{showColumns}
+
+				<strong>	ID, Name, Timestamp assignment: </strong>
+				{showUniqueColumns}
 			</Container>
 
 			<Foot>

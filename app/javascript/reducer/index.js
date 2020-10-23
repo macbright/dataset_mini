@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
-import { ADDFILE, REMOVEFILE, TOGGLECOLUMN  } from '../action/type';
+import { ADDFILE, REMOVEFILE, TOGGLECOLUMN, ADDUNIQUECOLUMNS, ADDKEY, REMOVEKEY } from '../action/type';
+import { unique } from 'underscore';
 
 const fileReducer = (state = {}, {type, payload}) =>{
 	switch (type){
@@ -20,9 +21,31 @@ const updateFile = (state= {}, {type, payload}) => {
 			return state
 	}
 }
+
+const  uniqueColumn = (state= {}, {type, payload}) => {
+	switch(type){
+		case ADDUNIQUECOLUMNS:
+			return {...state, ...payload}
+		default:
+			return state
+	}
+}
+
+const  addKey = (state= [], {type, payload}) => {
+	switch(type){
+		case ADDKEY:
+			return payload
+		case REMOVEKEY:
+			return payload
+		default:
+			return state
+	}
+}
 const rootReducer = combineReducers({
 	file: fileReducer,
-	updatedfile: updateFile
+	updatedfile: updateFile,
+	uniqueColumn,
+	addKey
 })
 
 export default rootReducer;

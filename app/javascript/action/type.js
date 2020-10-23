@@ -1,3 +1,6 @@
 export const ADDFILE = 'ADDFILE';
 export const REMOVEFILE = 'REMOVEFILE';
 export const TOGGLECOLUMN = 'TOGGLECOLUMN';
+export const ADDUNIQUECOLUMNS = 'ADDUNIQUECOLUMNS';
+export const ADDKEY = 'ADDKEY';
+export const REMOVEKEY = 'REMOVEKEY';

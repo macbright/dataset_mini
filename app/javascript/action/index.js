@@ -1,4 +1,4 @@
-import { ADDFILE, TOGGLECOLUMN } from './type';
+import { ADDFILE, TOGGLECOLUMN, ADDUNIQUECOLUMNS, REMOVEKEY, ADDKEY, REMOVEFILE } from './type';
 
 export const addfile = file => ({
 	type: ADDFILE,
@@ -8,6 +8,20 @@ export const addfile = file => ({
 export const columnExcluded = file => ({
 	type: TOGGLECOLUMN,
 	payload: file
+})
+
+export const addUniqueColumn = column => ({
+	type: ADDUNIQUECOLUMNS,
+	payload: culumn
+})
+
+export const addkey = key => ({
+	type: ADDKEY,
+	payload: key
+})
+export const removeKey = key => ({
+	type: REMOVEKEY,
+	payload: key
 })
 // export const addfile = (file) => async dispatch => {
 // 		const response =  file;

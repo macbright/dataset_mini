@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { useSelector } from 'react-redux'
 import _, { map, values } from 'underscore'
-import { filterColumns, uniqueAssign } from '../util/util'
+import { filterColumns } from '../util/util'
 import { useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
-import { TOGGLECOLUMN } from '../../action/type';
+import { TOGGLECOLUMN, ADDUNIQUECOLUMNS, ADDKEY, REMOVEKEY} from '../../action/type';
 
 const Container = styled.div`
 	max-width: 718px;
@@ -91,6 +91,7 @@ const SelectColumns = () => {
 	const [ newData, setNewData] = useState(data)
 	const uniqs = ['id', 'name', 'timestamp']
 	let selectOption = {};
+	dispatch({ type: REMOVEKEY, payload: state})
 	
 	
 	const handleChange = (e) => {
@@ -98,6 +99,7 @@ const SelectColumns = () => {
 			let header = _.without(state, e.target.value)
 			setState(header)
 			dispatch({ type: TOGGLECOLUMN, payload: filterColumns(header, data)})
+			dispatch({ type: REMOVEKEY, payload: e.target.value})
 			setNewData(filterColumns(header, data))
 		} else {
 			let header = state
@@ -105,7 +107,7 @@ const SelectColumns = () => {
 				header.push(e.target.value)
 			}
 			setState(header)
-			dispatch({ type: TOGGLECOLUMN, payload: filterColumns(state, state)})
+			dispatch({ type: REMOVEKEY, payload: e.target.value})
 			setNewData(filterColumns(state, state))
 		}	
 		
@@ -127,6 +129,7 @@ const SelectColumns = () => {
 			return
 		} else {
 			selectOption[e.target.name] = e.target.value
+			dispatch({ type: ADDUNIQUECOLUMNS, payload: selectOption})
 		}
 		console.log(selectOption)
 		
