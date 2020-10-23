@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import _, { map, values } from 'underscore'
 import { filterColumns, uniqueAssign } from '../util/util'
 import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import { TOGGLECOLUMN } from '../../action/type';
 
 const Container = styled.div`
@@ -51,15 +52,45 @@ const LastDiv = styled.div`
 	}
 `;
 
+const Foot = styled.div`
+	max-width: 718px;
+	height: 100px;
+	display: block;
+	margin: 0 auto;
+  align-items: center;
+	border-top: 2px solid #D3D3D3;
+	box-sizing: border-box;
+	padding: 25px;
+
+
+`;
+const Next = styled.button`
+	float: right;
+	background-color: blue;
+	color: #fff;
+	padding: 12px 20px 12px 20px;
+	border: none;
+	border-radius: 8px;
+`;
+const Cancel = styled.button`
+		float: left;
+		background-color: #D3D3D3;
+		color: #eeeee;
+		padding: 12px 20px 12px 20px;
+		border: none;
+		border-radius: 8px;
+`;
+
 const SelectColumns = () => {
 	const dispatch = useDispatch()
 	const file = useSelector(state => state.file)
 	const keys = Object.keys(file.payload.data[0])
+	const history = useHistory();
 	const [ state, setState] = useState(keys)
 	const data = file.payload.data
 	const [ newData, setNewData] = useState(data)
 	const uniqs = ['id', 'name', 'timestamp']
-	let selectOption = []
+	let selectOption = {};
 	
 	
 	const handleChange = (e) => {
@@ -97,10 +128,24 @@ const SelectColumns = () => {
 		} else {
 			selectOption[e.target.name] = e.target.value
 		}
+		console.log(selectOption)
 		
 	}
 
-const selectUniq = uniqs.map((uniq, i) => 
+	const handleNext = () => {
+		const values = _.values(selectOption)
+		if(values.length > 2){
+    	history.push("/confirm_details");
+		} else {
+			alert('you must select the ID, NAME, and TIMESTAMP')
+		}
+	}
+
+	const handlePrev = () => {
+    history.push("/");
+	}
+
+	const selectUniq = uniqs.map((uniq, i) => 
 		<div key={i}>
 			<label htmlFor={uniq}>{uniq.toUpperCase()}:</label><br />
 			<select name={uniq} id={uniq} onChange={handleSelect}>
@@ -115,6 +160,7 @@ const selectUniq = uniqs.map((uniq, i) =>
 	)
 
 	return (
+		<div>
 		<Container>
 				{console.log(state)}
 				{console.log(newData)}
@@ -128,6 +174,11 @@ const selectUniq = uniqs.map((uniq, i) =>
 				</LastDiv>
 	
 		</Container>
+		<Foot>
+			<Next onClick={handleNext}>Next </Next> 
+			<Cancel onClick={handlePrev}>Cancel </Cancel> 
+		</Foot>
+		</div>
 	)
 }
 
