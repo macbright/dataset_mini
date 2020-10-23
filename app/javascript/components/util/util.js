@@ -9,3 +9,4 @@ export const filterColumns = (colunmHeaders, file) => {
 	}
 	return newFile
 }
+

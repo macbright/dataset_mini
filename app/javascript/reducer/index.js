@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import { ADDFILE, REMOVEFILE  } from '../action/type';
+import { ADDFILE, REMOVEFILE, TOGGLECOLUMN  } from '../action/type';
 
 const fileReducer = (state = {}, {type, payload}) =>{
 	switch (type){
@@ -12,8 +12,17 @@ const fileReducer = (state = {}, {type, payload}) =>{
 	} 
 }
 
+const updateFile = (state= {}, {type, payload}) => {
+	switch(type){
+		case TOGGLECOLUMN:
+			return payload
+		default:
+			return state
+	}
+}
 const rootReducer = combineReducers({
-	file: fileReducer
+	file: fileReducer,
+	updatedfile: updateFile
 })
 
 export default rootReducer;
