@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import { useSelector } from 'react-redux'
 import _, { map, values } from 'underscore'
-import { filterColumns } from '../util/util'
+import { filterColumns, updateColumn } from '../util/util'
 import { useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import { TOGGLECOLUMN, ADDUNIQUECOLUMNS, ADDKEY, REMOVEKEY} from '../../action/type';
@@ -84,15 +84,14 @@ const Cancel = styled.button`
 const SelectColumns = () => {
 	const dispatch = useDispatch()
 	const file = useSelector(state => state.file)
-	const keys = Object.keys(file.payload.data[0])
+	const keys = Object.keys(file.payload[0])
 	const history = useHistory();
 	const [ state, setState] = useState(keys)
-	const data = file.payload.data
+	const data = file.payload
 	const [ newData, setNewData] = useState(data)
 	const uniqs = ['id', 'name', 'timestamp']
 	let selectOption = {};
 	dispatch({ type: REMOVEKEY, payload: state})
-	
 	
 	const handleChange = (e) => {
 		if(!e.target.checked){
@@ -131,8 +130,8 @@ const SelectColumns = () => {
 			selectOption[e.target.name] = e.target.value
 			dispatch({ type: ADDUNIQUECOLUMNS, payload: selectOption})
 		}
+		dispatch({ type: TOGGLECOLUMN, payload: updateColumn(data, selectOption)})
 		console.log(selectOption)
-		
 	}
 
 	const handleNext = () => {

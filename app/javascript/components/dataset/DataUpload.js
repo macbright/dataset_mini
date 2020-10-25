@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { parse } from "papaparse"
 import { useDispatch } from 'react-redux';
 import { ADDFILE, REMOVEFILE } from '../../action/type';
-
+import { removeEmpty } from '../util/util'
 
 
 const Container = styled.div`
@@ -94,7 +94,9 @@ const DataUpload = () => {
         reader.onload = (e) => {
 					const text = e.target.result;
 					const result = parse(text, { header: true });
-					dispatch({ type: ADDFILE, payload: result})
+					const res = removeEmpty(result.data);
+					console.log(result)
+					dispatch({ type: ADDFILE, payload: res})
         }
 				if (rABS) reader.readAsBinaryString(file);
 				else reader.readAsArrayBuffer(file);
