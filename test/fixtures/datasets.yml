@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: MyString
+  name: MyString
+  timestamp: MyString
+  header_1: MyString
+  header_2: MyString
+  header_3: MyString
+  header_4: MyString
+
+two:
+  id: MyString
+  name: MyString
+  timestamp: MyString
+  header_1: MyString
+  header_2: MyString
+  header_3: MyString
+  header_4: MyString

@@ -61,8 +61,6 @@ const Foot = styled.div`
 	border-top: 2px solid #D3D3D3;
 	box-sizing: border-box;
 	padding: 25px;
-
-
 `;
 const Next = styled.button`
 	float: right;
@@ -130,7 +128,7 @@ const SelectColumns = () => {
 			selectOption[e.target.name] = e.target.value
 			dispatch({ type: ADDUNIQUECOLUMNS, payload: selectOption})
 		}
-		dispatch({ type: TOGGLECOLUMN, payload: updateColumn(data, selectOption)})
+		dispatch({ type: TOGGLECOLUMN, payload: updateColumn(data, selectOption, e)})
 		console.log(selectOption)
 	}
 
