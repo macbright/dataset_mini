@@ -1,4 +1,5 @@
 import _, { map } from 'underscore';
+import { timestampError, timestampGood } from './errorDisplay';
 
 export const filterColumns = (colunmHeaders, file) => {
 	let newFile = [];
@@ -31,7 +32,8 @@ export const removeEmpty = (file) => {
 	return newFile
 }
 
-export const updateColumn = (file, obj, e) => {
+
+export const updateColumn = (file, obj, e, ref) => {
 	let newFile = [];
 	for(let i = 0; i < file.length; i++){
 		Object.entries(obj).forEach((key, val) =>{
@@ -39,12 +41,13 @@ export const updateColumn = (file, obj, e) => {
 	       file[i][key[0]] = file[i][key[1]]
          if(key[0] === 'timestamp'){
          	const timeSt = toTimestamp(file[i][key[0]])
-          if(timeSt.toString().length === 10 && !isNaN(timeSt)) {
-          	console.log("working")
-          } else { 
-						e.target.value = "options"
+          if(isNaN(timeSt)) {
+						timestampError(e, ref)
 						return
-          }    
+          }  else {
+						timestampGood(ref)
+						return
+					}  
          }
 	      delete file[i][key[1]]
 	    }

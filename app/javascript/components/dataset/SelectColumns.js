@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components';
 import { useSelector } from 'react-redux'
 import _, { map, values } from 'underscore'
@@ -79,17 +79,26 @@ const Cancel = styled.button`
 		border-radius: 8px;
 `;
 
+
+const Ref = styled.p`
+	display: none;
+	color: red;
+	font-size: 12px;
+	font-weight: bold;
+`;
+
 const SelectColumns = () => {
-	const dispatch = useDispatch()
-	const file = useSelector(state => state.file)
-	const keys = Object.keys(file.payload[0])
+	const dispatch = useDispatch();
+	const file = useSelector(state => state.file);
+	const keys = Object.keys(file.payload[0]);
 	const history = useHistory();
-	const [ state, setState] = useState(keys)
-	const data = file.payload
-	const [ newData, setNewData] = useState(data)
-	const uniqs = ['id', 'name', 'timestamp']
+	const error = useRef();
+	const [ state, setState] = useState(keys);
+	const data = file.payload;
+	const [ newData, setNewData] = useState(data);
+	const uniqs = ['id', 'name', 'timestamp'];
 	let selectOption = {};
-	dispatch({ type: REMOVEKEY, payload: state})
+	dispatch({ type: REMOVEKEY, payload: state});
 	
 	const handleChange = (e) => {
 		if(!e.target.checked){
@@ -128,7 +137,7 @@ const SelectColumns = () => {
 			selectOption[e.target.name] = e.target.value
 			dispatch({ type: ADDUNIQUECOLUMNS, payload: selectOption})
 		}
-		dispatch({ type: TOGGLECOLUMN, payload: updateColumn(data, selectOption, e)})
+		dispatch({ type: TOGGLECOLUMN, payload: updateColumn(data, selectOption, e, error)})
 		console.log(selectOption)
 	}
 
@@ -156,6 +165,7 @@ const SelectColumns = () => {
            ))
           }
 			</select>
+			<Ref ref={error}></Ref>
 		</div>
 	)
 
