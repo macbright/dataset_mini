@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components';
 import { useHistory } from "react-router-dom";
-import _, { map, values } from 'underscore'
+import axios from 'axios';
+import { uploadfile } from '../util/util';
 
 
 
@@ -80,12 +81,20 @@ const FirstP =  styled.span`
 const ConfirmDetails = () => {
 	const history = useHistory();
 	const addKey = useSelector(state => state.addKey)
+	const file = useSelector(state => state.updatedfile);
 	const uniqueColumn = useSelector(state => state.uniqueColumn)
 
 	const handleNext = () => {
-		if(true){
-    	history.push("/");
+		for(let i =0; i<file.length; i++){
+			let data = uploadfile(file[i], Object.keys(addKey))
+			 axios.post('api/v1/datasets', data)
+				.then(res => {
+        	console.log(res);
+       	 	console.log(res.data);
+      })
 		}
+		history.push("/");
+
 	}
 	const handlePrev = () => {
 		if(true){
@@ -111,6 +120,7 @@ const ConfirmDetails = () => {
 	return (
 		<div> 
 			<Container>
+				{console.log(file)}
 				<strong>Included columns: </strong>
 				{showColumns}
 

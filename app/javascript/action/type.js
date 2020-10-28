@@ -4,3 +4,4 @@ export const TOGGLECOLUMN = 'TOGGLECOLUMN';
 export const ADDUNIQUECOLUMNS = 'ADDUNIQUECOLUMNS';
 export const ADDKEY = 'ADDKEY';
 export const REMOVEKEY = 'REMOVEKEY';
+export const UPLOADFILE = 'UPLOADFILE';

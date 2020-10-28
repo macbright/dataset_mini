@@ -1,5 +1,5 @@
 import _, { map } from 'underscore';
-import { timestampError, timestampGood } from './errorDisplay';
+import { timestampError, timestampGood, idError, idGood } from './errorDisplay';
 
 export const filterColumns = (colunmHeaders, file) => {
 	let newFile = [];
@@ -32,6 +32,10 @@ export const removeEmpty = (file) => {
 	return newFile
 }
 
+const checkId = (file) => {
+	const unique = [...new Set(file.map(obj => obj.id))];
+  return file.length === unique.length ? true : false
+}
 
 export const updateColumn = (file, obj, e, ref) => {
 	let newFile = [];
@@ -43,12 +47,17 @@ export const updateColumn = (file, obj, e, ref) => {
          	const timeSt = toTimestamp(file[i][key[0]])
           if(isNaN(timeSt)) {
 						timestampError(e, ref)
-						return
           }  else {
 						timestampGood(ref)
-						return
 					}  
          }
+				//  if(key[0] === 'id'){
+				// 	 if(checkId){
+				// 		 idGood(e, ref)
+				// 	 } else {
+				// 		 idError(e, ref)
+				// 	 }
+				//  }
 	      delete file[i][key[1]]
 	    }
 		})
@@ -57,6 +66,26 @@ export const updateColumn = (file, obj, e, ref) => {
 	}
 	return newFile
 }
+
+export const uploadfile = (file, columns) => {
+	const headers = ['header_1', 'header_2', 'header_3','header_4']
+	let newFile = [];
+  let res = Object.keys(file) 
+ 	 for(let i=0; i <res.length; i++){
+ 	    if(!columns.includes(res[i])){
+ 	      newFile.push(res[i])
+ 	    }
+ 	  } 
+	
+  for(let i=0; i <headers.length; i++){
+ 	   file[headers[i]] = file[newFile[i]]
+      delete file[newFile[i]]
+ 	  }
+  
+	return file
+}
+
+
 // export const updateColumn = (file, obj) => {
 // 	let newFile = [];
 // 	for(let i = 0; i < file.length; i++){
